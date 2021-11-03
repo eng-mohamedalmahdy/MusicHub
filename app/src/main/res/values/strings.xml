@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MusicHub</string>
+    <string name="albums">Albums</string>
+    <string name="music">Music</string>
+</resources>
