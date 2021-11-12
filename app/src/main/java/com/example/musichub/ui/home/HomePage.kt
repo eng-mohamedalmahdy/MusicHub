@@ -1,80 +1,67 @@
 package com.example.musichub.ui.home
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.example.musichub.ui.musiclist.MusicList
+import com.example.musichub.ui.currentmusicsheet.CurrentMusicDetailsSheet
 import com.example.musichub.ui.musiclist.MusicListViewModel
-import com.example.musichub.ui.theme.OrangeCrayola
-import com.example.musichub.ui.theme.PeachCrayola
+import com.example.musichub.ui.musiccontrollers.SmallMusicController
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import androidx.compose.material.ModalBottomSheetValue.*
+import com.example.musichub.ui.musiclist.MusicPage
 
+@ExperimentalMaterialApi
 @Composable
 fun Home(
-    topBarTitle: String = "MusicGub",
-    firstTabText: String = "Music",
-    secondTapText: String = "Albums",
+    topBarTitle: String = "MusicHub",
     musicListViewModel: MusicListViewModel
 ) {
-
+    val musicList = musicListViewModel.displayedMusicFiles.collectAsState()
+    val isPlaying = musicListViewModel.playingStatus.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
+    val isShowingMusicDetails = rememberModalBottomSheetState(Hidden)
+    val currentPlayingIndex = musicListViewModel.currentPlayingFile.collectAsState()
     Column {
-        var tabIndex by remember { mutableStateOf(0) }
-        HomeAppBar(topBarTitle)
-        HomeTapBar(
-            tabIndex,
-            firstTabText,
-            secondTapText,
-            firstTabClickListener = { tabIndex = 0 },
-            secondTapClickListener = { tabIndex = 1 })
-        PagesContainer(tabIndex, musicListViewModel)
 
+        HomeAppBar(topBarTitle, viewModel = musicListViewModel)
+
+        CurrentMusicDetailsSheet(
+            musicFile = currentPlayingIndex.value ?: return,
+            isShowingDetails = isShowingMusicDetails,
+            viewModel = musicListViewModel
+        ) {
+
+            Column {
+                MusicPage(musicList = musicList.value) {
+                    musicListViewModel.updateCurrentMusicFile(it)
+                    musicListViewModel.playMusicFile()
+                }
+
+                SmallMusicController(
+                    currentMusicFile = currentPlayingIndex.value ?: return@CurrentMusicDetailsSheet,
+                    isPlaying = isPlaying.value,
+                    onContainerClick = {
+                        toggleMusicDetailsBottomSheet(coroutineScope, isShowingMusicDetails)
+                    },
+                    onPlayClick = { musicListViewModel.togglePlayingStatus() },
+                    onNextClick = { musicListViewModel.fetchNextMusicFile() })
+            }
+        }
 
     }
 }
 
-
-@Composable
-fun HomeAppBar(topBarTitle: String) {
-    TopAppBar(backgroundColor = OrangeCrayola) {
-        Text(color = Color.White, text = topBarTitle)
-    }
-}
-
-@Composable
-fun HomeTapBar(
-    tabIndex: Int,
-    firstTabText: String,
-    secondTapText: String,
-    firstTabClickListener: () -> Unit,
-    secondTapClickListener: () -> Unit
+@ExperimentalMaterialApi
+fun toggleMusicDetailsBottomSheet(
+    coroutineScope: CoroutineScope,
+    isShowingMusicDetails: ModalBottomSheetState
 ) {
-    val tapPadding = 20.dp
-
-    TabRow(backgroundColor = PeachCrayola, selectedTabIndex = tabIndex) {
-        Tab(
-            selected = true,
-            onClick = { firstTabClickListener() }) {
-            Text(text = firstTabText, modifier = Modifier.padding(tapPadding))
-        }
-        Tab(
-            selected = false,
-            onClick = { secondTapClickListener() }) {
-            Text(text = secondTapText, modifier = Modifier.padding(tapPadding))
+    coroutineScope.launch {
+        if (isShowingMusicDetails.isVisible) {
+            isShowingMusicDetails.animateTo(Hidden)
+        } else {
+            isShowingMusicDetails.animateTo(Expanded)
         }
     }
 }
-
-@Composable
-fun PagesContainer(tabIndex: Int, musicListViewModel: MusicListViewModel) {
-    if (tabIndex == 0) {
-        MusicList(musicListViewModel)
-    }
-}
-

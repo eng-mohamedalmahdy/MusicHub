@@ -32,6 +32,6 @@ object MusicProvider {
             songs += song
         }
         cursor?.close()
-        return songs.take(50)
+        return songs
     }
 }
