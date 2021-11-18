@@ -4,6 +4,8 @@ buildscript {
         compose_version = '1.0.5'
     }
     repositories {
+        maven { url "https://jitpack.io" }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         google()
         mavenCentral()
     }

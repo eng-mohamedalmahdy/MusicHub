@@ -21,59 +21,18 @@ import com.example.musichub.ui.theme.PeachCrayola
 @Composable
 internal fun PlayButton(isPlaying: Boolean, onClick: () -> Unit) {
     val imageId = if (!isPlaying) R.drawable.ic_play else R.drawable.ic_pause
-
-    Image(
-        ImageVector.vectorResource(id = imageId),
-        "Localized description",
-        colorFilter = ColorFilter.tint(OrangeCrayola),
-        modifier = Modifier
-            .padding(start = 24.dp)
-            .size(50.dp)
-            .border(2.dp, color = PeachCrayola, shape = CircleShape)
-            .border(3.dp, color = PeachCrayola, shape = CircleShape)
-            .padding(4.dp)
-            .clip(CircleShape)
-            .clickable { onClick() }
-
-    )
-
+    ControlMusicButton(imageId = imageId, onClick = onClick)
 }
 
 @Composable
-internal fun NextButton(onClick: () -> Unit) {
-    Image(
-        ImageVector.vectorResource(id = R.drawable.ic_skip_next),
-        "Localized description",
-        colorFilter = ColorFilter.tint(OrangeCrayola),
-        modifier = Modifier
-            .padding(start = 24.dp)
-            .size(30.dp)
-            .border(3.dp, color = PeachCrayola, shape = CircleShape)
-            .padding(4.dp)
-            .clip(CircleShape)
-            .clickable { onClick() }
+internal fun NextButton(onClick: () -> Unit) =
+    ControlMusicButton(imageId = R.drawable.ic_skip_next, onClick = onClick)
 
-    )
-
-}
 
 @Composable
-internal fun PreviousButton(onClick: () -> Unit) {
-    Image(
-        ImageVector.vectorResource(id = R.drawable.ic_previous),
-        "Localized description",
-        colorFilter = ColorFilter.tint(OrangeCrayola),
-        modifier = Modifier
-            .padding(start = 24.dp)
-            .size(30.dp)
-            .border(3.dp, color = PeachCrayola, shape = CircleShape)
-            .padding(4.dp)
-            .clip(CircleShape)
-            .clickable { onClick() }
+internal fun PreviousButton(onClick: () -> Unit) =
+    ControlMusicButton(imageId = R.drawable.ic_previous, onClick = onClick)
 
-    )
-
-}
 
 @Composable
 internal fun RepeatingButton(repeatStatus: PlayingRepeatStatus, onClick: () -> Unit) {
@@ -83,18 +42,22 @@ internal fun RepeatingButton(repeatStatus: PlayingRepeatStatus, onClick: () -> U
         PlayingRepeatStatus.REPEAT_ONE -> R.drawable.ic_repeat_one
         PlayingRepeatStatus.SHUFFLE -> R.drawable.ic_shuffle
     }
+    ControlMusicButton(imageId = image, onClick = onClick)
+}
+
+@Composable
+private fun ControlMusicButton(imageId: Int, onClick: () -> Unit) {
     Image(
-        ImageVector.vectorResource(id = image),
+        ImageVector.vectorResource(id = imageId),
         "Localized description",
         colorFilter = ColorFilter.tint(OrangeCrayola),
         modifier = Modifier
             .padding(start = 24.dp)
-            .size(35.dp)
+            .size(45.dp)
             .border(3.dp, color = PeachCrayola, shape = CircleShape)
             .padding(4.dp)
             .clip(CircleShape)
             .clickable { onClick() }
 
     )
-
 }

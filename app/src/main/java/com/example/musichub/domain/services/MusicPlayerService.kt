@@ -48,7 +48,28 @@ class MusicPlayerService : Service() {
         super.onCreate()
         val currentMusicFile = repository.currentPlayingFile.value
         mediaSession = MediaSessionCompat(this, getString(R.string.app_name))
-        startForeground(7, createNotification(mediaSession, currentMusicFile!!))
+        if (currentMusicFile != null) startForeground(
+            7,
+            createNotification(mediaSession, currentMusicFile)
+        )
+
+        CoroutineScope(Dispatchers.Main).launch {
+            repository.playingStatus.collect {
+                val currentMusicFile = repository.currentPlayingFile.value
+                if (currentMusicFile != null) startForeground(
+                    7,
+                    createNotification(mediaSession, currentMusicFile)
+                )
+            }
+        }
+
+        CoroutineScope(Dispatchers.Main).launch {
+            repository.currentPlayingFile.collect {
+                if (it != null) {
+                    startForeground(7, createNotification(mediaSession, it))
+                }
+            }
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -63,18 +84,6 @@ class MusicPlayerService : Service() {
             }
         }
 
-        CoroutineScope(Dispatchers.Main).launch {
-            repository.playingStatus.collect {
-                val currentMusicFile = repository.currentPlayingFile.value
-                startForeground(7, createNotification(mediaSession, currentMusicFile!!))
-            }
-        }
-
-        CoroutineScope(Dispatchers.Main).launch {
-            repository.currentPlayingFile.collect {
-                startForeground(7, createNotification(mediaSession, it!!))
-            }
-        }
         return START_STICKY
     }
 

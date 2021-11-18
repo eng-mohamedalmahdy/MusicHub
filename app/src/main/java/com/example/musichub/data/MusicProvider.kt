@@ -6,8 +6,7 @@ import android.provider.MediaStore
 
 object MusicProvider {
     fun getAllMusic(context: Context): List<MusicFile> {
-        val selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
-        val uriExternal: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        val uriExternal: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 
         val projection = arrayOf(
             MediaStore.Audio.Media._ID,
@@ -18,7 +17,7 @@ object MusicProvider {
             MediaStore.Audio.Media.DATA
         )
 
-        val cursor = context.contentResolver.query(uriExternal, projection, selection, null, null)
+        val cursor = context.contentResolver.query(uriExternal, projection, null, null, null)
 
         val songs = mutableListOf<MusicFile>()
         while (cursor?.moveToNext() == true) {

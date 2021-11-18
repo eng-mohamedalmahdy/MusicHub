@@ -1,29 +1,24 @@
-package com.example.musichub.ui.musiclist
+package com.example.musichub.ui.musicpage
 
 import android.graphics.BitmapFactory
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
 import com.example.musichub.R
 import com.example.musichub.data.MusicFile
+import com.example.musichub.ui.CircularImage
 import com.example.musichub.ui.theme.*
 
 @Composable
@@ -82,17 +77,8 @@ private fun MusicListRow(
             modifier = Modifier.fillMaxWidth(.075f)
         )
 
-        Image(
-            painter = rememberImagePainter(image),
-            contentDescription = null,
-            modifier = Modifier
-                .padding(8.dp)
-                .size(50.dp)
-                .clip(CircleShape)
-                .background(OrangeCrayola),
-            colorFilter = ColorFilter.tint(OrangeCrayola, blendMode = BlendMode.Saturation),
+        CircularImage(image)
 
-            )
         Column {
             Text(
                 text = title, color = Color.Black, fontSize = 20.sp

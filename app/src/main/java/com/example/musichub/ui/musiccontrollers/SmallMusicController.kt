@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import com.example.musichub.R
 import com.example.musichub.data.MusicFile
+import com.example.musichub.ui.CircularImage
 import com.example.musichub.ui.previewproviders.SampleMusicFileProvider
 import com.example.musichub.ui.theme.OrangeCrayola
 import com.example.musichub.ui.theme.SapphireBlue
@@ -64,15 +65,7 @@ private fun SongDetails(currentMusicFile: MusicFile) {
         )
     }
     Row(Modifier.padding(top = 8.dp, start = 12.dp, end = 12.dp)) {
-        Image(
-            painter = rememberImagePainter(data = image),
-            contentDescription = null,
-            modifier = Modifier
-                .padding(8.dp)
-                .size(50.dp)
-                .clip(CircleShape),
-            colorFilter = ColorFilter.tint(OrangeCrayola, blendMode = BlendMode.Saturation),
-        )
+        CircularImage(image = image)
         Column(Modifier.padding(start = 4.dp, top = 8.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(

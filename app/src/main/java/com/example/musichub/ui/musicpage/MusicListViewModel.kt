@@ -1,4 +1,4 @@
-package com.example.musichub.ui.musiclist
+package com.example.musichub.ui.musicpage
 
 import android.app.Application
 import android.media.MediaPlayer
@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import javax.inject.Inject
@@ -56,13 +57,13 @@ class MusicListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            currentPlayingFile.collectLatest {
+            currentPlayingFile.filterNotNull().collectLatest {
                 repository.mediaPlayer?.stop()
                 repository.mediaPlayer?.release()
                 repository.updateMediaPlayer(
                     MediaPlayer.create(
                         getApplication(),
-                        Uri.parse(it?.path ?: "")
+                        Uri.parse(it.path)
                     )
                 )
                 repository.mediaPlayer?.setOnCompletionListener(mediaPlayerCompletionListener)

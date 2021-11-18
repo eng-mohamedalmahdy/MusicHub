@@ -1,4 +1,4 @@
-package com.example.musichub.ui.musiclist
+package com.example.musichub.ui.musicpage
 
 
 import androidx.compose.material.*
