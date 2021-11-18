@@ -7,7 +7,7 @@ Playing around with Kotlin compose the new UI framework
 
 * MVVM as architecture patterns
 * Live data
-* Dagget hilt
+* Dagger hilt
 * SQLite database
 * Kotlin kotlin coroutines 
 * Kotlin Compose
