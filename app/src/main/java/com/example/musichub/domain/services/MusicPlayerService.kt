@@ -2,13 +2,13 @@ package com.example.musichub.domain.services
 
 import android.app.Notification
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_MUTABLE
 import android.app.Service
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Binder
 import android.os.Build
 import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
 import com.example.musichub.MainActivity
@@ -92,14 +92,20 @@ class MusicPlayerService : Service() {
         currentMusicFile: MusicFile
     ): Notification {
 
-        val intent = Intent(this, MainActivity::class.java)
-        val contentIntent = PendingIntent.getActivity(this, 0, intent, 0)
 
+
+        val intent = Intent(this, MainActivity::class.java)
+        var contentIntent: PendingIntent? = null
+        contentIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.getActivity(this, 0, intent, FLAG_MUTABLE)
+        } else {
+            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+        }
         val playIntent = Intent(this, PlayerNotificationBroadcastReceiver::class.java).apply {
             action = ACTION_PLAY
         }
         val playPendingIntent =
-            PendingIntent.getBroadcast(this, 0, playIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            PendingIntent.getBroadcast(this, 0, playIntent, PendingIntent.FLAG_UPDATE_CURRENT or FLAG_MUTABLE)
 
         val playIcon =
             if (!repository.playingStatus.value) R.drawable.ic_play else R.drawable.ic_pause
@@ -111,7 +117,7 @@ class MusicPlayerService : Service() {
             action = ACTION_NEXT
         }
         val playNextPendingIntent =
-            PendingIntent.getBroadcast(this, 0, playNextIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            PendingIntent.getBroadcast(this, 0, playNextIntent, PendingIntent.FLAG_UPDATE_CURRENT or FLAG_MUTABLE)
         val nextAction =
             NotificationCompat.Action.Builder(
                 R.drawable.ic_skip_next,
@@ -124,7 +130,7 @@ class MusicPlayerService : Service() {
             action = ACTION_PREV
         }
         val playPrevPendingIntent =
-            PendingIntent.getBroadcast(this, 0, playPrevIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            PendingIntent.getBroadcast(this, 0, playPrevIntent, PendingIntent.FLAG_UPDATE_CURRENT or FLAG_MUTABLE)
 
         val prevAction =
             NotificationCompat.Action.Builder(
